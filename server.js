@@ -1,3 +1,4 @@
+const { error } = require('console');
 const express = require('express');
 const session = require('express-session');
 const app = express();
@@ -13,6 +14,8 @@ app.use(
   })
 )
 
+
+app.set('view engine', 'ejs');
 
 const users = [];
 
@@ -67,63 +70,28 @@ app.delete('/todo/delete', (req, res) => {
 
 app.get('/', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login")
+    res.render("/login",{error:null})
     return;
   }
-  fs.readFile(__dirname + '/index.html', 'utf8', (err, content) => {
-    if (err) {
-      console.error('Error reading the index.html file:', err);
-      res.sendStatus(500);
-      return;
-    }
-
-    const user = req.session.user;
-    const renderedContent = content.replace('{{name}}', user.name);
-
-    // Send the modified content as the response
-    res.send(renderedContent);
-  });
+  const user=req.session.user.name
+  res.render("index",{name:user})
 });
 
 
 app.get('/about', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login")
+    res.render("/login",{error:null})
     return;
   }
-  fs.readFile(__dirname + '/about.html', 'utf8', (err, content) => {
-    if (err) {
-      console.error('Error reading the about.html file:', err);
-      res.sendStatus(500);
-      return;
-    }
-
-    const user = req.session.user;
-    const renderedContent = content.replace('{{name}}', user.name);
-
-    // Send the modified content as the response
-    res.send(renderedContent);
-  });
+  res.render("about")
 });
 
 app.get('/contact', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.redirect("/login")
+    res.render("/login",{error:null})
     return;
   }
-  fs.readFile(__dirname + '/contact.html', 'utf8', (err, content) => {
-    if (err) {
-      console.error('Error reading the contact.html file:', err);
-      res.sendStatus(500);
-      return;
-    }
-
-    const user = req.session.user;
-    const renderedContent = content.replace('{{name}}', user.name);
-
-    // Send the modified content as the response
-    res.send(renderedContent);
-  });
+  res.render("contact")
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -132,7 +100,7 @@ app.post('/login', (req, res) => {
   fs.readFile('users.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading users.json:', err);
-      res.redirect('/login');
+      res.render('/login',{error:null});
       return;
     }
 
@@ -145,13 +113,13 @@ app.post('/login', (req, res) => {
       res.redirect('/');
       return;
     } else {
-      res.redirect('/login?error=1');
+      res.render('/login',{error:'Enter valid credentials'});
     }
   });
 });
 
 app.get('/login', (req, res) => {
-  res.sendFile(__dirname + '/login.html')
+  res.render("login",{error:null})
 })
 
 app.get('/logout', (req, res) => {
@@ -160,13 +128,13 @@ app.get('/logout', (req, res) => {
       console.log(er)
     }
     else {
-      res.redirect('/login');
+      res.render("login")
     }
   })
 })
 
 app.get('/signup', (req, res) => {
-  res.sendFile(__dirname + '/signup.html')
+  res.render('signup',{error:null})
 })
 
 
@@ -177,7 +145,7 @@ app.post('/signup', (req, res) => {
   fs.readFile('users.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading users.json:', err);
-      res.redirect('/login');
+      res.render("login")
       return;
     }
 
@@ -187,8 +155,7 @@ app.post('/signup', (req, res) => {
     const existingUser = existingUsers.find((user) => user.username === username || user.email === email);
     if (existingUser) {
       // If a user with the same username or email already exists, send an error response
-      return res.redirect('/signup?error=1');
-      return;
+      return res.render('signup',{error:'User with same username or email already exist!'})
     }
 
     // If no user with the same username or email exists, proceed with registration
@@ -201,7 +168,7 @@ app.post('/signup', (req, res) => {
       } else {
         console.log('User data saved successfully.');
         // Redirect to login page with a success message as a query parameter
-        res.redirect('/login?accountCreated=true');
+        res.render('/login',{error:null});
       }
     });
   });

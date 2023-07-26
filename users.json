@@ -12,5 +12,17 @@
         "password": "a",
         "name": "Ayush Mishra",
         "email": "ayush.info.dev@gmail.com"
+    },
+    {
+        "username": "s",
+        "password": "w",
+        "name": "Ayush Mishra",
+        "email": "ayush.io.dev@gmail.com"
+    },
+    {
+        "username": "ns",
+        "password": "e",
+        "name": "Ayush ",
+        "email": ".info.dev@gmail.com"
     }
 ]
