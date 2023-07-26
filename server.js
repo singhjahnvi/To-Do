@@ -91,7 +91,19 @@ app.get('/about', (req, res) => {
     res.redirect("/login")
     return;
   }
-  res.sendFile(__dirname + '/about.html');
+  fs.readFile(__dirname + '/about.html', 'utf8', (err, content) => {
+    if (err) {
+      console.error('Error reading the about.html file:', err);
+      res.sendStatus(500);
+      return;
+    }
+
+    const user = req.session.user;
+    const renderedContent = content.replace('{{name}}', user.name);
+
+    // Send the modified content as the response
+    res.send(renderedContent);
+  });
 });
 
 app.get('/contact', (req, res) => {
@@ -99,7 +111,19 @@ app.get('/contact', (req, res) => {
     res.redirect("/login")
     return;
   }
-  res.sendFile(__dirname + '/contact.html');
+  fs.readFile(__dirname + '/contact.html', 'utf8', (err, content) => {
+    if (err) {
+      console.error('Error reading the contact.html file:', err);
+      res.sendStatus(500);
+      return;
+    }
+
+    const user = req.session.user;
+    const renderedContent = content.replace('{{name}}', user.name);
+
+    // Send the modified content as the response
+    res.send(renderedContent);
+  });
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;

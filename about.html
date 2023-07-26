@@ -16,6 +16,7 @@
             background-color: #333;
             padding: 10px 0;
             display: flex;
+            justify-content: space-between;
         }
 
         .navbar a {
@@ -38,18 +39,26 @@
             box-shadow: 0px 10px 10px  rgba(0, 0, 0, 0.436);
         }
 
+        .username{
+            color: #f0f0f0;
+            margin-right: 30px;
+        }
         
     </style>
 </head>
 
 <body>
     <nav class="navbar">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-        <a href="/">Todo</a>
-        <a href="/logout">Log-out</a>
-        </ul>
+        <div>
+            <a href="/">Home</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href="/">Todo</a>
+            <a href="/logout">Log-out</a>
+        </div>
+        <div class="username">
+            Welcome, {{name}}!
+        </div>
     </nav>
     <div class="container">
         <h1>About</h1>
