@@ -145,10 +145,11 @@ app.get('/signup', (req, res) => {
   res.sendFile(__dirname + '/signup.html')
 })
 
+
 app.post('/signup', (req, res) => {
   const { username, password, name, email } = req.body;
-  const newUser = { username, password, name, email };
-  users.push(newUser);
+
+  // Read the users.json file to check for existing users
   fs.readFile('users.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading users.json:', err);
@@ -157,6 +158,17 @@ app.post('/signup', (req, res) => {
     }
 
     const existingUsers = JSON.parse(data);
+
+    // Check if a user with the same username or email already exists
+    const existingUser = existingUsers.find((user) => user.username === username || user.email === email);
+    if (existingUser) {
+      // If a user with the same username or email already exists, send an error response
+      return res.redirect('/signup?error=1');
+      return;
+    }
+
+    // If no user with the same username or email exists, proceed with registration
+    const newUser = { username, password, name, email };
     existingUsers.push(newUser);
 
     fs.writeFile('users.json', JSON.stringify(existingUsers), 'utf8', (err) => {
@@ -169,8 +181,8 @@ app.post('/signup', (req, res) => {
       }
     });
   });
-}
-)
+});
+
 
 app.get('/script.js', (req, res) => {
   res.sendFile(__dirname + '/script.js');
