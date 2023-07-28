@@ -70,7 +70,7 @@ app.delete('/todo/delete', (req, res) => {
 
 app.get('/', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.render("/login",{error:null})
+    res.render("login",{error:null})
     return;
   }
   const user=req.session.user.name
@@ -80,18 +80,20 @@ app.get('/', (req, res) => {
 
 app.get('/about', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.render("/login",{error:null})
+    res.render("login",{error:null})
     return;
   }
-  res.render("about")
+  const user=req.session.user.name
+  res.render("about",{name:user})
 });
 
 app.get('/contact', (req, res) => {
   if (!req.session.isLoggedIn) {
-    res.render("/login",{error:null})
+    res.render("login",{error:null})
     return;
   }
-  res.render("contact")
+  const user=req.session.user.name
+  res.render("contact",{name:user})
 });
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -100,7 +102,7 @@ app.post('/login', (req, res) => {
   fs.readFile('users.json', 'utf8', (err, data) => {
     if (err) {
       console.error('Error reading users.json:', err);
-      res.render('/login',{error:null});
+      res.render('login',{error:null});
       return;
     }
 
@@ -113,7 +115,7 @@ app.post('/login', (req, res) => {
       res.redirect('/');
       return;
     } else {
-      res.render('/login',{error:'Enter valid credentials'});
+      res.render('login',{error:'Enter valid credentials'});
     }
   });
 });
@@ -168,7 +170,7 @@ app.post('/signup', (req, res) => {
       } else {
         console.log('User data saved successfully.');
         // Redirect to login page with a success message as a query parameter
-        res.render('/login',{error:null});
+        res.render('login',{error:null});
       }
     });
   });
